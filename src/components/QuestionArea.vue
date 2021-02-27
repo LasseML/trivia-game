@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>{{getCurrentQuestion(index)}}</h1>
+        <h1>{{currentQuestion.question}}</h1>
 
         <button 
             v-for="(answer,index) in shuffledAnswersOfArray" 
@@ -13,6 +13,7 @@
         <hr/>
         <button @click="incrementIndexByOne()">Next</button>
         <hr/>
+        <h1>{{combinedAnswers}}</h1>
     </div>
 </template>
 
@@ -31,44 +32,66 @@ export default {
         index : 0,
         currentQuestion : null,
         indexOfSelectedAnswer : null,
-        shuffledAnswersOfArray : []
+        shuffledAnswersOfArray : [],
+        resultScreenData : []
+        //userCorrectAnswer : [],
+        //userIncorrectAnswer : []
     };
   },
   created() {
     this.loadDataFromAPI();
-    //this.shuffleArrayOfAnswers();
   },
   methods: {
     async loadDataFromAPI() {
       this.questions = await getQuestions();
       this.getCurrentQuestion(this.index);
+      this.shuffleArrayOfAnswers();
     },
     getAllAnswers(question){
       this.combinedAnswers = [question.correct_answer, ...question.incorrect_answers];
-      return [question.correct_answer, ...question.incorrect_answers];
+      console.log(this.combinedAnswers);
+      //return [question.correct_answer, ...question.incorrect_answers];
     },
     getCurrentQuestion(index){
-      this.currentQuestion = this.questions[index].question;
-      console.log(this.currentQuestion);
-      return this.currentQuestion;
+      this.currentQuestion = this.questions[index];
+      //console.log(this.currentQuestion);
+      //return this.currentQuestion;
     },
     incrementIndexByOne(){
+      this.saveChoice();
       this.index++;
       this.indexOfSelectedAnswer = null;
+      this.getCurrentQuestion(this.index);
       this.shuffleArrayOfAnswers();
     },
     getIndexOfSelectedAnswer(index){
       this.indexOfSelectedAnswer = index;
-      console.log(this.indexOfSelectedAnswer);
+      this.compareUserAnswerWithCorrectAnswer();
+      //console.log(this.indexOfSelectedAnswer);
     },
     shuffleArrayOfAnswers(){
-      console.log(this.getAllAnswers(this.questions[this.index]));
-      let answers = this.getAllAnswers(this.questions[this.index]);
-      console.log(answers);
-      this.shuffledAnswersOfArray = answers.sort(() => Math.random() - 0.5);
-      console.log(this.shuffledAnswersOfArray);
-      return this.shuffledAnswersOfArray;
-    } 
+      this.getAllAnswers(this.questions[this.index]);
+      //let answers = this.getAllAnswers(this.questions[this.index]);
+      //console.log(answers);
+      this.shuffledAnswersOfArray = this.combinedAnswers.sort(() => Math.random() - 0.5);
+      //console.log(this.shuffledAnswersOfArray);
+      //return this.shuffledAnswersOfArray;
+    },
+    compareUserAnswerWithCorrectAnswer(){
+      if (this.currentQuestion.correct_answer === this.combinedAnswers[this.indexOfSelectedAnswer]) {
+        console.log('correct');
+      } else {
+        console.log('incorrect');
+      }
+    },
+    saveChoice(){
+      let choice = {};
+      choice.answered = this.combinedAnswers[this.indexOfSelectedAnswer];
+      choice.correct = this.currentQuestion.correct_answer;
+      choice.question = this.currentQuestion.question;
+
+      this.resultScreenData.push(choice);
+    }
   }
 };
 
