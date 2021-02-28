@@ -1,21 +1,39 @@
 <template>
   <div id="app">
-    <Header></Header>
-    <QuestionArea></QuestionArea>
+    <StartScreen v-if="this.gameStarted != true" @start="startGame"></StartScreen>
+    <div v-if="this.gameStarted == true">
+      <QuestionArea @questions-done="displayResult" v-if="displayResults == null"></QuestionArea>
+      <ResultScreen v-if="displayResults != null" v-bind:displayResults="displayResults"></ResultScreen>
+    </div>  
   </div>
 </template>
 
 <script>
-import Header from './components/Header.vue'
 import QuestionArea from './components/QuestionArea.vue'
-
+import ResultScreen from './components/ResultScreen.vue'
+import StartScreen from './components/StartScreen.vue'
 
 export default {
   name: 'App',
   components: {
-    Header,
-    QuestionArea
-  }
+    QuestionArea,
+    ResultScreen,
+    StartScreen
+  },
+  methods:{
+    displayResult(result){
+      this.displayResults = result;
+    },
+    startGame(){
+      this.gameStarted = true;
+    }
+  },
+  data() {
+    return {
+      displayResults : null,
+      gameStarted : false
+    };
+  },
 }
 </script>
 
