@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h1>Total score: <span>{{calculateScore()}} out of 100.</span></h1>
         <ul     
         v-for="(displayResult,index) in displayResults"
         :key="index">
@@ -7,7 +8,6 @@
             <li>User answer: <span v-html="displayResult.answered"></span></li>
             <li>Correct answer: <span v-html="displayResult.correct"></span></li><br>
         </ul>
-        <h1>Total score: <span>{{calculateScore()}}</span></h1>
     </div>
 </template>
 

@@ -4,13 +4,10 @@
         <button 
             v-for="(answer,index) in shuffledAnswersOfArray" 
             :key="index"
-            @click="getIndexOfSelectedAnswer(index)"
+            @click="getIndexOfSelectedAnswer(index);incrementIndexByOne();"
             :class="[indexOfSelectedAnswer === index ? 'selected' : '']"
             v-html="answer">
         </button> 
-        <hr/>
-        <button @click="incrementIndexByOne()">Next</button>
-        <hr/>
     </div>
 </template>
 
@@ -57,7 +54,6 @@ export default {
     },
     getIndexOfSelectedAnswer(index){
       this.indexOfSelectedAnswer = index;
-      this.compareUserAnswerWithCorrectAnswer();
     },
     shuffleArrayOfAnswers(){
       this.getAllAnswers(this.questions[this.index]);
@@ -76,7 +72,4 @@ export default {
 </script>
 
 <style scoped>
-.selected {
-  background-color: orange;
-}
 </style>
